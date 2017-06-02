@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>无限轮播1</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    ul,li {
+      list-style: none
+    }
+    a {
+      text-decoration: none;
+    }
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .carousel {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .carousel .img-ct {
+      position: relative;
+    }
+    .img-ct li {
+      position: absolute;
+      display: none;
+    }
+    .img-ct img {
+      height: 200px;
+      width: 300px;
+    }
+    /*下图标样式*/
+    .carousel .btn {
+    /*绝对定位和负margin组合形成垂直居中*/
+      position: absolute;
+      top:50%;
+      margin-top: -15px;
+
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      font-size: 18px;
+      border-radius: 50%;
+      background: #333;
+      color: #fff;
+      opacity: 0.8;
+    }
+    .carousel .btn-pre {
+      left: 10px;
+    }
+     .carousel .btn-next {
+      right: 10px;
+    }
+
+    /*布置下面的标签栏*/
+    .carousel .cricl {
+      position: absolute;
+      left: 50%;
+      margin-left: -60px;
+      bottom: 20px; 
+    }
+    .carousel .cricl>li {
+      width: 20px;
+      height: 6px;
+      border-radius: 3px;
+      background: #fff;
+      float: left;
+      margin: 0 5px;
+    }
+    .carousel .cricl .active {
+      background: #aaa;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="carousel">
+    <ul class="img-ct clearfix">
+      <li data-index=0><a href="#"><img src="img/1.JPG" alt=""></a></li>
+      <li data-index=1><a href="#"><img src="img/2.JPG" alt=""></a></li>
+      <li data-index=2><a href="#"><img src="img/3.JPG" alt=""></a></li>
+      <li data-index=3><a href="#"><img src="img/4.JPG" alt=""></a></li>
+    </ul>   
+    <a href="#" class="btn btn-pre">&lt;</a>
+    <a href="#" class="btn btn-next">&gt;</a>
+    <ul class="cricl clearfix">
+      <li class='active'></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+  <script>
+      var $imgCt = $('.img-ct'),
+          $items = $imgCt.children(),
+          $pre = $('.btn-pre'),
+          $next = $('.next-pre'),
+          $cricl = $('.cricl')
+          imgWidth = $items.width(),    //单个图片宽度
+          imgCount = $items.length;     //图片个数
+
+      var curIdx = 0;
+      var isAnimate = false;
+
+      $next.on('click',function(){
+        stopAuto();
+        playNext();
+      })
+      $pre.on('click',function(){
+        stopAuto();
+        playPre();
+      })
+      $cricl.find('li').on('clcik',function(){
+        var idx = $(this).index();
+        play(idx);
+      })
+      play(0);
+      playAuto();
+
+      function playNext(){
+        play((curIdx+1)%imgCount)
+      }
+      function playPre(){
+        play((imgCount+curIdx-1)%imgCount)
+      }
+
+      //定义图片展示函数
+      function play(idx) {
+        if(isAnimate) return;  //判断状态锁状态来确定是否再次执行下面程序
+        isAnimate = true;     //状态锁被锁上
+
+        $items.eq(curIdx).fadeOut(500);
+        $items.eq(idx).fadeIn(500,function(){
+          isAnimate = false;       //执行完毕后状态锁解锁
+        })
+        curIdx = idx;
+        setCricl();
+      }
+      //定义下角小标签（label）如何展示
+      function setCricl(){
+        $cricl.children().removeClass('active')
+              .eq(curIdx).addClass('active')
+      }
+
+      //定义自动播报和停止
+      var clock = setInterval(function(){
+          playNext();
+        },1000)
+      function playAuto(){
+        clock;
+      }
+      function stopAuto(){
+        clearInterval(clock);
+      }
+  </script>
+</body>
+</html>

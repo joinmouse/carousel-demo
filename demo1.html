@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>轮播1</title>
+  <style>
+    ul,li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    /*图片重叠，利用绝对定位实现,父定位*/
+    .img-ct {
+      position: absolute;
+      height: 200px;
+      width: 1800px;
+    }
+    .img-ct li {
+      float: left;
+    }
+    .img-ct img {
+      width: 300px;
+      height: 200px;
+    }
+    /*实现按钮的效果*/
+    .carousel {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .carousel .btn {
+    /*绝对定位和负margin组合形成垂直居中*/
+      position: absolute;
+      top:50%;
+      margin-top: -15px;
+
+      width: 20px;
+      height: 20px;
+      text-decoration: none;
+      text-align: center;
+      font-size: 18px;
+      border-radius: 50%;
+      background: #333;
+      color: #fff;
+      opacity: 0.8;
+      display: block;
+    }
+    .carousel .btn-pre {
+      left: 10px;
+    }
+     .carousel .btn-next {
+      right: 10px;
+    }
+
+    /*布置下面的标签栏*/
+    .carousel .cricl {
+      position: absolute;
+      left: 50%;
+      margin-left: -60px;
+      bottom: 20px; 
+    }
+    .carousel .cricl>li {
+      width: 20px;
+      height: 6px;
+      border-radius: 3px;
+      background: #fff;
+      float: left;
+      margin: 0 5px;
+    }
+    .carousel .cricl .active {
+      background: #aaa;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="carousel">
+    <ul class="img-ct clearfix">
+      <li data-index=0><a href="#"><img src="img/1.JPG" alt=""></a></li>
+      <li data-index=1><a href="#"><img src="img/2.JPG" alt=""></a></li>
+      <li data-index=2><a href="#"><img src="img/3.JPG" alt=""></a></li>
+      <li data-index=3><a href="#"><img src="img/4.JPG" alt=""></a></li>
+    </ul>   
+    <a href="#" class="btn btn-pre">&lt;</a>
+    <a href="#" class="btn btn-next">&gt;</a>
+    <ul class="cricl clearfix">
+      <li class='active'></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+  <script>
+      var $imgCt = $('.img-ct')
+      var $preBtn = $('.btn-pre')
+      var $nextBtn = $('.btn-next')
+      var $cricl = $('.cricl')
+
+      var $firstImg = $imgCt.find('li').first(),
+          $lastImg = $imgCt.find('li').last()
+      //设置图片的起始页为1，定义$imgCt.children().length数量为4
+      var pageIdx = 0;
+      var imgLength = $imgCt.children().length
+      var isAnimate = false;
+      //为前后copy标签
+      $imgCt.prepend($lastImg.clone())
+      $imgCt.append($firstImg.clone())
+
+      //$imgCt.children().length的数量为6
+      $imgCt.width($firstImg.width() * $imgCt.children().length)
+      $imgCt.css('left','-300px')
+
+
+    //绑定事件
+      $('.btn-pre').on('click',function(e){
+        e.preventDefault()
+        playPre();
+      })
+      $('.btn-next').on('click',function(e){
+        e.preventDefault()
+        playNext();
+      })
+
+      //定义向后滚动函数
+      function playNext(n){
+        if(isAnimate) return;     //状态锁
+
+        isAnimate = true;
+        $imgCt.animate({
+          left: '-=300'
+        },function(){
+          pageIdx++
+          if(pageIdx === imgLength){
+            $imgCt.css('left','-300px')
+            pageIdx = 0
+          }
+          isAnimate = false;
+          setCricl();
+        })
+      }
+
+      //定义向前滚动函数
+      function playPre(){
+        if(isAnimate) return;     //状态锁
+
+        isAnimate = true;
+        $imgCt.animate({
+          left: '+=300'
+        },function(){
+          pageIdx--
+          if(pageIdx < 0){
+            $imgCt.css('left','-1200px')
+            pageIdx = imgLength-1;
+          }
+          isAnimate = false;
+          setCricl();
+        })
+      }
+
+      //定义下面小图标的变换
+      function setCricl(){
+        $cricl.children().removeClass('active')
+              .eq(pageIdx).addClass('active')
+      }
+  </script>
+</body>
+</html>

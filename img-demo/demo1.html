@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>轮播1</title>
+  <style>
+    ul,li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    /*图片重叠，利用绝对定位实现,父定位*/
+    .img-ct {
+      position: absolute;
+      height: 200px;
+      width: 1800px;
+    }
+    .img-ct li {
+      float: left;
+    }
+    .img-ct img {
+      width: 300px;
+      height: 200px;
+    }
+    /*实现按钮的效果*/
+    .carousel {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .carousel .btn {
+    /*绝对定位和负margin组合形成垂直居中*/
+      position: absolute;
+      top:50%;
+      margin-top: -15px;
+
+      width: 20px;
+      height: 20px;
+      text-decoration: none;
+      text-align: center;
+      font-size: 18px;
+      border-radius: 50%;
+      background: #333;
+      color: #fff;
+      opacity: 0.8;
+      display: block;
+    }
+    .carousel .btn-pre {
+      left: 10px;
+    }
+     .carousel .btn-next {
+      right: 10px;
+    }
+
+    /*布置下面的标签栏*/
+    .carousel .cricl {
+      position: absolute;
+      left: 50%;
+      margin-left: -60px;
+      bottom: 20px; 
+    }
+    .carousel .cricl>li {
+      width: 20px;
+      height: 6px;
+      border-radius: 3px;
+      background: #fff;
+      float: left;
+      margin: 0 5px;
+    }
+    .carousel .cricl .active {
+      background: #aaa;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="carousel">
+    <ul class="img-ct clearfix">
+      <li data-index=0><a href="#"><img src="img/1.JPG" alt=""></a></li>
+      <li data-index=1><a href="#"><img src="img/2.JPG" alt=""></a></li>
+      <li data-index=2><a href="#"><img src="img/3.JPG" alt=""></a></li>
+      <li data-index=3><a href="#"><img src="img/4.JPG" alt=""></a></li>
+    </ul>   
+    <a href="#" class="btn btn-pre">&lt;</a>
+    <a href="#" class="btn btn-next">&gt;</a>
+    <ul class="cricl clearfix">
+      <li class='active'></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+  <script>
+
+    var Carousel = function(ct) {
+      this.ct = ct
+      this.imgCt = ct.find('.img-ct')
+      this.preBtn = ct.find('.btn-pre')
+      this.nextBtn = ct.find('.btn-next')
+      this.cricl = ct.find('.cricl')
+
+      this.pageIdx = 0;
+      this.isAnimate = false;
+
+      this.init()
+      this.bind()
+    }
+    Carousel.prototype.init = function() {
+      var $imgCt = this.imgCt
+      var $preBtn = this.preBtn
+      var $nextBtn = this.nextBtn
+      var $cricl = this.cricl
+
+      var $firstImg = $imgCt.find('li').first()
+      var $lastImg = $imgCt.find('li').last()
+
+      //设置图片的起始页为1，定义$imgCt.children().length数量为4
+     
+      this.imgLength = $imgCt.children().length
+      
+      //为前后copy标签
+      $imgCt.prepend($lastImg.clone())
+      $imgCt.append($firstImg.clone())
+
+      //$imgCt.children().length的数量为6
+      $imgCt.width($firstImg.width() * $imgCt.children().length)
+      $imgCt.css('left','-300px')
+    }
+    //绑定事件的方法 
+    Carousel.prototype.bind = function() {
+       var that = this
+       this.preBtn.on('click',function(e){
+        e.preventDefault()
+        that.playNext();
+      })
+      this.nextBtn.on('click',function(e){
+        e.preventDefault()
+        that.playPre();
+      })
+    }
+
+    //向后滚动方法
+    Carousel.prototype.playPre = function() {
+      var that = this
+      if(this.isAnimate) return;     //状态锁，防止重复点击
+
+        this.isAnimate = true;
+        this.imgCt.animate({
+          left: '-=300'
+        },function(){
+          that.pageIdx++
+          if(that.pageIdx === that.imgLength){
+            that.imgCt.css('left','-300px')
+            that.pageIdx = 0
+          }
+        })
+        this.isAnimate = false;
+        this.setCricl();
+    }
+    //向前滚动方法
+    Carousel.prototype.playNext = function() {
+      var that = this
+      if(this.isAnimate) return;     //状态锁
+
+        this.isAnimate = true;
+        this.imgCt.animate({
+          left: '+=300'
+        },function(){
+          that.pageIdx--
+          if(that.pageIdx < 0){
+            that.imgCt.css('left','-1200px')
+            that.pageIdx = that.imgLength-1;
+          }
+        })
+        this.isAnimate = false;
+        this.setCricl();
+      }
+
+    Carousel.prototype.setCricl = function() {
+      this.cricl.children().removeClass('active')
+              .eq(this.pageIdx).addClass('active')
+    }
+
+    new Carousel($('.carousel'));
+  </script>
+</body>
+</html>

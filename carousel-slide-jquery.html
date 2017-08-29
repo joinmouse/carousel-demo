@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>无限轮播</title>
+    <style>
+      /*上面图片布局*/
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #98f5f1;
+      }
+      ul,li {
+        list-style: none;
+      }
+      .carousel {
+        position: relative;
+        width: 640px;
+        height: 480px;
+        overflow: hidden;
+        margin: 50px auto;
+      }
+      .imageContent {
+        position: absolute;
+        overflow: hidden;
+      }
+      .imageContent > li {
+        float: left;
+      }
+      .imageContent >li img {
+        width: 640px;
+        height: 480px;
+      }
+
+      /*小图标*/
+      .carousel .arrow {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        margin-top: -15px;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+      }
+      .carousel .arrow:hover {
+        opacity: 0.8;
+        color: #ccc
+      }
+      .carousel .pre {
+        left: 10px;
+      }      
+      .carousel .next {
+        right: 10px;
+      }
+      
+      .carousel .bullet {
+        position: absolute;
+        width: 100%;
+        bottom: 10px;
+        font-size: 0;
+        z-index: 1;
+        text-align: center;
+      }
+      .carousel .bullet > li {
+        display: inline-block;
+        width: 30px;
+        height: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 0 3px;
+        cursor: pointer;
+      }
+      .carousel .bullet .active {
+        background-color: #ccc;
+      }
+    </style>
+</head>
+<body>
+  <div class="carousel">
+    <ul class="imageContent">
+      <li data-id=0><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg"></a></li>
+      <li data-id=1><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg"></a></li>
+      <li data-id=2><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg"></a></li>
+      <li data-id=3><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg"></a></li>
+    </ul>
+    <a href="#" class="pre arrow">←</a>
+    <a href="#" class="next arrow">→</a>
+    <ul class="bullet">
+      <li class="active"></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+   
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="js/slide-jquery.js"></script>
+</body>
+</html>
